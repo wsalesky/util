@@ -13,7 +13,7 @@ declare function local:left-half-ring-pers(){
             <persName xmlns="http://www.tei-c.org/ns/1.0" xml:id="{concat('name',$rec-id,'-',(count($parent/tei:persName) + 2))}" xml:lang="en-xsrp1" syriaca-tags="#syriaca-simplified-script">{replace($pers-name,'ʿ','‘')}</persName>
         )
     return 
-        update insert $new-name following $parent/tei:persName[last()]
+        (update insert $new-name following $parent/tei:persName[last()],local:do-change-stmt($recs))
 };
 
 declare function local:right-half-ring-pers(){
@@ -27,7 +27,7 @@ declare function local:right-half-ring-pers(){
             <persName xmlns="http://www.tei-c.org/ns/1.0" xml:id="{concat('name',$rec-id,'-',(count($parent/tei:persName) + 2))}" xml:lang="en-xsrp1" syriaca-tags="#syriaca-simplified-script">{replace($pers-name,'ʿ','’')}</persName>
         )
     return 
-        update insert $new-name following $parent/tei:persName[last()]
+        (update insert $new-name following $parent/tei:persName[last()],local:do-change-stmt($recs))
 };
 
 declare function local:left-half-ring-place(){
@@ -41,7 +41,7 @@ declare function local:left-half-ring-place(){
             <placeName xmlns="http://www.tei-c.org/ns/1.0" xml:id="{concat('name',$rec-id,'-',(count($parent/tei:placeName) + 2))}" xml:lang="en-xsrp1" syriaca-tags="#syriaca-simplified-script">{replace($pers-name,'ʿ','‘')}</placeName>
         )
     return 
-        update insert $new-name following $parent/tei:placeName[last()]
+        (update insert $new-name following $parent/tei:placeName[last()],local:do-change-stmt($recs))
 };
 
 declare function local:right-half-ring-place(){
@@ -55,8 +55,18 @@ declare function local:right-half-ring-place(){
             <placeName xmlns="http://www.tei-c.org/ns/1.0" xml:id="{concat('name',$rec-id,'-',(count($parent/tei:placeName) + 2))}" xml:lang="en-xsrp1" syriaca-tags="#syriaca-simplified-script">{replace($pers-name,'ʿ','’')}</placeName>
         )
     return 
-        update insert $new-name following $parent/tei:placeName[last()]
+        (update insert $new-name following $parent/tei:placeName[last()],local:do-change-stmt($recs))
 };
+
+declare function local:do-change-stmt($recs){
+    let $change := 
+        <change xmlns="http://www.tei-c.org/ns/1.0" who="http://syriaca.org/documentation/editors.xml#wsalesky" when="{current-date()}">ADDED: Add alternate names for search functionality.</change>
+    return
+        (
+         update insert $change preceding $recs/ancestor::tei:TEI/tei:teiHeader/tei:revisionDesc/tei:change[1],
+         update value $recs/ancestor::tei:TEI/tei:teiHeader/tei:fileDesc/tei:publicationStmt/tei:date with current-date())
+};
+
 for $recs in collection('/db/apps/srophe/data/persons/tei')//tei:persName[contains(.,'ʿ')]
 return 
 (xmldb:login('/db/apps/srophe/', 'admin', '', true()),local:left-half-ring-pers())
