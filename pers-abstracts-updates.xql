@@ -19,13 +19,14 @@ declare function local:do-alt-names($abstracts, $docs, $rec-id){
             return        
                 if($addName = 'false') then
                     update insert
-                        <persName xmlns="http://www.tei-c.org/ns/1.0" xml:id="name{$rec-id}-{count($docs//tei:persName)}" xml:lang="en" source="#bib{$rec-id}-1">{$alt-name/node()}</persName>
+                        <persName xmlns="http://www.tei-c.org/ns/1.0" xml:id="name{$rec-id}-{(count($docs//tei:persName) + 1)}" xml:lang="en" source="#bib{$rec-id}-1">{$alt-name/node()}</persName>
                     following $docs//tei:persName[parent::tei:person][last()]
                 else ()    
                 )       
             else () 
 };
  
+(:NOTE, need to handle existing abstracts, with text, replace text? wrap it in quote? also placename does not have the tei namespace?:) 
 declare function local:do-abstracts($abstracts,$docs, $rec-id){
     for $abstract in $abstracts/Abstract
     let $newAbstract := 
