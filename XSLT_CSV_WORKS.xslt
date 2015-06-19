@@ -125,14 +125,14 @@
                                     <xsl:if test="normalize-space(.) !=''">
                                         <note
                                             xml:lang="{
-                                            if(self::Prol._inc or self::Text_inc. or self::Text._des.) then 'syr'
+                                            if(self::Prol._inc. or self::Text_inc. or self::Text._des.) then 'syr'
                                             else if(self::Prol._FT_ or self::Text_inc._FT or self::Text._Des._FT) then 'fr'
                                             else if(self::Prol._ET or self::Text_inc._ET or self::Text._Des._ET) then 'en'
                                             else ()}"
                                             type="{
-                                            if(self::Prol._inc or self::Prol._FT_ or self::Prol._ET) then 'prologue'
+                                            if(self::Prol._inc. or self::Prol._FT_ or self::Prol._ET) then 'prologue'
                                             else if(self::Text_inc. or self::Text_inc._FT or self::Text_inc._ET) then 'incipit'
-                                            else if(self::Text._des. or self::Text_Des._FT or self::Text._Des._ET) then 'explicit'
+                                            else if(self::Text._Des._FT or self::Text._des. or self::Text._Des._ET) then 'explicit'
                                             else ()}"
                                             source="#bib{$record-id}-1">
                                             <quote>
@@ -152,7 +152,7 @@
                                                 <xsl:value-of select="normalize-space(EdTitle1)"/>
                                             </title>
                                             <citedRange><xsl:value-of
-                                                  select="normalize-space(EdRef1)"/>, </citedRange>
+                                                  select="normalize-space(EdRef1)"/</citedRange>
                                         </bibl>
                                     </note>
                                 </xsl:if>
