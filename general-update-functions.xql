@@ -16,6 +16,26 @@ declare namespace tei="http://www.tei-c.org/ns/1.0";
              <change who="http://syriaca.org/editors.xml#{$editor}" when="{current-dateTime()}">ADDED: latitude and longitude from Pleiades</change>
         </div>
 :)
+declare function local:add-bibl($rec, $newUri){
+    for $bibl in $rec/descendant::tei:bibl[last()]
+    let $biblId := substring-before($bibl/@xml:id,'-')
+    let $id := substring-after($bibl/@xml:id,'-')
+    let $newBiblId:= concat($biblId,'-',xs:integer($id) + 1)
+    let $newBibl := 
+            <bibl xml:id="{$newBiblId}">
+                <ptr target="{$newUri}"/>
+            </bibl>
+            (:update value $doc/ancestor::*//tei:teiHeader/tei:fileDesc/tei:publicationStmt/tei:date with current-date():)
+    let $abstract := $rec/descendant::tei:desc[@type='abstract']
+    return 
+        (update insert $newBibl following $bibl,
+        if($abstract/@source) then
+            update value $abstract with concat('#',$newBiblId)
+        else update insert attribute source {concat('#',$newBiblId)} into $abstract
+        )
+        
+
+};
 
 declare function local:update-locations(){
     for $places in doc('/db/apps/srophe/data/places/Pleiades-Grabber-Results-Edited.xml')//row[Match='UPDATED']

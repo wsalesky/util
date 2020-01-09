@@ -24,7 +24,7 @@ declare variable $changeLog := 'CHANGED: Add a human readable version or the tei
  : @param  $relation tei:relation element
 :)
 declare function local:relation-text($rec as item()*){
-    for $relation in $rec/descendant::tei:div[@subtype='relation']/descendant::tei:relation
+    for $relation in $rec/descendant::tei:div/descendant::tei:relation
     let $desc :=
         <desc xmlns="http://www.tei-c.org/ns/1.0">{local:decode-relationship($relation)}</desc>
     return 
@@ -183,23 +183,9 @@ declare function local:decode-relationship($relationship as item()*){
                 else $relationship-name
             let $name := functx:camel-case-to-words(replace($default-name,'-',' '),' ')
             return (local:get-name($relationship/@active)," ", $name," " , local:get-name($relationship/@passive),'.')
-       (:
-        @type       
-        snap:AcknowledgedFamilyRelationship	applied as a qualifier to a relationship using a @type attribute	(Acknowledged family relationship)
-        snap:AdoptedFamilyRelationship	applied as a qualifier to a relationship using a @type attribute	(Adopted family relationship)
-        syriaca:AllegedRelationship	applied as a qualifier to a relationship using a @type attribute	(Alleged relationship)
-        snap:ClaimedFamilyRelationship	applied as a qualifier to a relationship using a @type attribute	(Claimed family relationship)
-        snap:FosterFamilyRelationship	applied as a qualifier to a relationship using a @type attribute	(Foster family relationship)
-        snap:HalfFamilyRelationship	applied as a qualifier to a relationship using a @type attribute	(Half family relationship)
-        snap:InLawFamilyRelationship	applied as a qualifier to a relationship using a @type attribute	(In law family relationship)
-        snap:MaternalFamilyRelationship	applied as a qualifier to a relationship using a @type attribute	(Maternal family relationship)
-        snap:PaternalFamilyRelationship	applied as a qualifier to a relationship using a @type attribute	(Paternal family relationship)
-        syriaca:RitualKinship	applied as a qualifier to a relationship using a @type attribute	(Ritual kinship)
-        snap:StepFamilyRelationship	applied as a qualifier to a relationship using a @type attribute	(Step family relationship)        
-       :) 
 };
     
-for $rec in collection('/db/apps/srophe-data/data/spear')//tei:TEI[descendant::tei:div[@subtype='relation']]
+for $rec in collection('/db/apps/srophe-data/data/spear')//tei:TEI[descendant::tei:relation]
 let $change :=             
         <change xmlns="http://www.tei-c.org/ns/1.0" who="http://syriaca.org/documentation/editors.xml#{$editor}" when="{current-date()}">{$changeLog}</change>
 return
